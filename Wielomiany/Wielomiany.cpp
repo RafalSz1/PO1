@@ -8,15 +8,22 @@ typedef struct {
     int stopien;
 } Wielomian;
 
-char* UsunOdstepy(const char* napis) {
-    char* napis2;
-    int y = 0, dlugosc = strlen(napis);
-    napis2 = new char [dlugosc + 1];
-    for (int i = 0; i < dlugosc; i++)
-        if (napis[i] != ' ') 
-            napis2[y++] = napis[i];
-    napis2[y] = 0;
-    return napis2;
+// char* UsunOdstepy(const char* napis) {
+//     char* napis2;
+//     int y = 0, dlugosc = strlen(napis);
+//     napis2 = new char [dlugosc + 1];
+//     for (int i = 0; i < dlugosc; i++)
+//         if (napis[i] != ' ') 
+//             napis2[y++] = napis[i];
+//     napis2[y] = 0;
+//     return napis2;
+// }
+
+const char* PominOdstepy(const char* napis) {
+    while (*napis == ' ') {
+        napis++;
+    }
+    return napis;
 }
 
 int OkreslStopien(const char* napis) {
@@ -24,6 +31,7 @@ int OkreslStopien(const char* napis) {
     int stopien = 0;
     int i = 0;
     while (napis[i]) {
+        napis = PominOdstepy(napis);
         if (napis[i] == 'x') {
             if (napis[i + 1] == '^') {
                 char* koniecNapisu;
@@ -51,9 +59,12 @@ float* PrzydzielPamiec(int stopien) {
 
 const char* AnalizujJednomian(const char* napis, Wielomian* w)
 {
+    napis = PominOdstepy(napis);
+    if (*napis == '\0') return napis;
+    
     int wykladnik = 0;
     int znak = 1;
-    float wspolczynnik;
+    float wspolczynnik = 1.0f;
 
     if (*napis == '-')
     {
@@ -62,19 +73,25 @@ const char* AnalizujJednomian(const char* napis, Wielomian* w)
     }
     else if (*napis == '+')
         napis++;
-
-    if (*napis == 'x')
-        wspolczynnik = 1;
-    else {
+    
+    napis = PominOdstepy(napis);
+    
+    if (*napis != 'x' && *napis != '\0') {
         char* koniec;
         wspolczynnik = strtod(napis, &koniec);
         napis = koniec;
     }
+        
+    napis = PominOdstepy(napis);
 
     if (*napis == 'x') {
-        if (*++napis == '^') {
+        napis++;
+        napis = PominOdstepy(napis);
+        if (*napis == '^') {
+            napis++;
+            napis = PominOdstepy(napis);
             char* koniecNapisu;
-            wykladnik = strtol(++napis, &koniecNapisu, 10);
+            wykladnik = strtol(napis, &koniecNapisu, 10);
             napis = koniecNapisu;
         }
         else 
@@ -90,19 +107,20 @@ const char* AnalizujJednomian(const char* napis, Wielomian* w)
 }
 
 void AnalizujJednomiany(const char* napis, Wielomian *w){
-    while(*napis)
+    while(*napis) {
+        napis = PominOdstepy(napis);
+        if (*napis == '\0') break;
         napis = AnalizujJednomian(napis, w);
+    }
 }
 
 Wielomian Analizuj(const char* napis)
 {
-    char* bezOdstepow = UsunOdstepy(napis);
     Wielomian w;
-    w.stopien = OkreslStopien(bezOdstepow);
+    w.stopien = OkreslStopien(napis);
     w.wspolczynnik = PrzydzielPamiec(w.stopien);
-    AnalizujJednomiany(bezOdstepow, &w);
+    AnalizujJednomiany(napis, &w);
     
-    delete[] bezOdstepow;
     return w;
 }
 
