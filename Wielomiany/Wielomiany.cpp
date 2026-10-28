@@ -3,10 +3,34 @@
 
 using namespace std;
 
-typedef struct {
-    float *wspolczynnik;
-    int stopien;
-} Wielomian;
+class Wielomian {
+    double* wspolczynnik;
+    unsigned int stopien;
+public:
+    Wielomian(const char*);
+    Wielomian& operator+=(const Wielomian&);
+};
+
+Wielomian& Wielomian::operator+=(const Wielomian& w2) {
+    if (stopien < w2.stopien) {
+        double* nowy_wsp = new double[w2.stopien + 1];
+
+        for (int i = 0; i <= stopien; i++)
+            nowy_wsp[i] = wspolczynnik[i];
+
+        for (int i = stopien + 1; i <= w2.stopien; i++)
+            nowy_wsp[i] = 0;
+
+        delete[] wspolczynnik;
+        wspolczynnik = nowy_wsp;
+        stopien = w2.stopien;
+    }
+
+    for (int i = 0; i <= w2.stopien; i++)
+        wspolczynnik[i] += w2.wspolczynnik[i];
+
+    return *this;
+}
 
 // char* UsunOdstepy(const char* napis) {
 //     char* napis2;
@@ -26,16 +50,16 @@ const char* PominOdstepy(const char* napis) {
     return napis;
 }
 
-int OkreslStopien(const char* napis) {
-    int maksStopien = 0;
-    int stopien = 0;
+unsigned int OkreslStopien(const char* napis) {
+    unsigned int maksStopien = 0;
+    unsigned int stopien = 0;
     int i = 0;
     while (napis[i]) {
         napis = PominOdstepy(napis);
         if (napis[i] == 'x') {
             if (napis[i + 1] == '^') {
                 char* koniecNapisu;
-                stopien = strtol(&napis[i+2], &koniecNapisu, 10);
+                stopien = strtol(&napis[i + 2], &koniecNapisu, 10);
                 i = koniecNapisu - napis;
             }
             else {
@@ -61,7 +85,7 @@ const char* AnalizujJednomian(const char* napis, Wielomian* w)
 {
     napis = PominOdstepy(napis);
     if (*napis == '\0') return napis;
-    
+
     int wykladnik = 0;
     int znak = 1;
     float wspolczynnik = 1.0f;
@@ -73,15 +97,15 @@ const char* AnalizujJednomian(const char* napis, Wielomian* w)
     }
     else if (*napis == '+')
         napis++;
-    
+
     napis = PominOdstepy(napis);
-    
+
     if (*napis != 'x' && *napis != '\0') {
         char* koniec;
         wspolczynnik = strtod(napis, &koniec);
         napis = koniec;
     }
-        
+
     napis = PominOdstepy(napis);
 
     if (*napis == 'x') {
@@ -94,20 +118,20 @@ const char* AnalizujJednomian(const char* napis, Wielomian* w)
             wykladnik = strtol(napis, &koniecNapisu, 10);
             napis = koniecNapisu;
         }
-        else 
+        else
             wykladnik = 1;
     }
     else
         wykladnik = 0;
-    
+
     w->wspolczynnik[wykladnik] = znak * wspolczynnik;
 
     return napis;
 
 }
 
-void AnalizujJednomiany(const char* napis, Wielomian *w){
-    while(*napis) {
+void AnalizujJednomiany(const char* napis, Wielomian* w) {
+    while (*napis) {
         napis = PominOdstepy(napis);
         if (*napis == '\0') break;
         napis = AnalizujJednomian(napis, w);
@@ -120,7 +144,7 @@ Wielomian Analizuj(const char* napis)
     w.stopien = OkreslStopien(napis);
     w.wspolczynnik = PrzydzielPamiec(w.stopien);
     AnalizujJednomiany(napis, &w);
-    
+
     return w;
 }
 
@@ -142,7 +166,7 @@ void Pokaz(Wielomian w) {
 
     for (int i = w.stopien; i >= 0; i--) {
         float wsp = w.wspolczynnik[i];
-        
+
         if (wsp == 0.0f) {
             continue;
         }
@@ -151,10 +175,12 @@ void Pokaz(Wielomian w) {
             if (wsp < 0) {
                 cout << "-";
             }
-        } else {
+        }
+        else {
             if (wsp < 0) {
                 cout << " - ";
-            } else {
+            }
+            else {
                 cout << " + ";
             }
         }
@@ -180,7 +206,17 @@ void Pokaz(Wielomian w) {
 
 int main()
 {
-    const char* napis = "x^3-x^2+2x-7.5";
-    Wielomian w = Analizuj(napis);
-    Pokaz(w);
+    const char* napis1 = "3x^2-2x+5";
+    const char* napis2 = "-3x^2";
+    // Wielomian w = Analizuj(napis1);
+    Wielomian w1(napis1);
+    Wielomian w2(napis2);
+
+    // Pokaz(w);
 }
+
+// TODO:
+// klasa Wielomian
+//  konstruktor
+//  konstruktory inne
+//  operatory +...
