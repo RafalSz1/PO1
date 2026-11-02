@@ -11,7 +11,7 @@ class Wielomian {
         Wielomian();
         Wielomian(int st, double *wsp);
         Wielomian(const char *napis);
-        Wielomian(Wielomian &w);
+        Wielomian(const Wielomian &w);
         ~Wielomian();
         Wielomian& operator+=(const Wielomian&);
         
@@ -68,7 +68,7 @@ Wielomian::Wielomian(const char *napis) {
     AnalizujJednomiany(napis, this);
 }
 
-Wielomian::Wielomian(Wielomian &w) {
+Wielomian::Wielomian(const Wielomian &w) {
     stopien = w.stopien;
     wspolczynnik = new double[stopien + 1];
     for (unsigned int i = 0; i <= stopien; i++) {
@@ -99,6 +99,11 @@ Wielomian& Wielomian::operator+=(const Wielomian& w2) {
         wspolczynnik[i] += w2.wspolczynnik[i];
 
     return *this;
+}
+
+Wielomian operator+(Wielomian w1, Wielomian w2) {
+    w1 += w2;
+    return w1;
 }
 
 // char* UsunOdstepy(const char* napis) {
@@ -273,25 +278,28 @@ void Pokaz(Wielomian w) {
 }
 
 int main() {
-    const char* napis1 = "3x^2-2x+5";
-    const char* napis2 = "-3x^2";
-    // Wielomian w = Analizuj(napis1);
-    Wielomian w1(napis1);
-    Wielomian w2(napis2);
+    Wielomian w0;
+    cout << "Domyslny: ";
+    Pokaz(w0);
 
-    cout << "W1: ";
+    double tab[] = {1.0, 2.0};
+    Wielomian w1(1, tab);
+    cout << "Tablica: ";
     Pokaz(w1);
-    cout << "W2: ";
+
+    Wielomian w2("3x^2-2x+5");
+    cout << "Napis: ";
     Pokaz(w2);
-    w1 += w2;
-    cout << "W1 + W2: ";
-    Pokaz(w1);
-    
-    return 0;
-}
 
-// TODO:
-// klasa Wielomian
-//  konstruktor
-//  konstruktory inne
-//  operatory +...
+    Wielomian w3(w2);
+    cout << "Kopiujacy: ";
+    Pokaz(w3);
+
+    w2 += w1;
+    cout << "w2 += w1: ";
+    Pokaz(w2);
+
+    Wielomian w4 = w1 + w3;
+    cout << "w1 + w3: ";
+    Pokaz(w4);
+}
