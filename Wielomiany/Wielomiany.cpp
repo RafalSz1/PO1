@@ -57,10 +57,10 @@ Wielomian& Wielomian::operator+=(const Wielomian& w2) {
     if (stopien < w2.stopien) {
         double* nowy_wsp = new double[w2.stopien + 1];
 
-        for (int i = 0; i <= stopien; i++)
+        for (unsigned int i = 0; i <= stopien; i++)
             nowy_wsp[i] = wspolczynnik[i];
 
-        for (int i = stopien + 1; i <= w2.stopien; i++)
+        for (unsigned int i = stopien + 1; i <= w2.stopien; i++)
             nowy_wsp[i] = 0;
 
         delete[] wspolczynnik;
@@ -68,7 +68,7 @@ Wielomian& Wielomian::operator+=(const Wielomian& w2) {
         stopien = w2.stopien;
     }
 
-    for (int i = 0; i <= w2.stopien; i++)
+    for (unsigned int i = 0; i <= w2.stopien; i++)
         wspolczynnik[i] += w2.wspolczynnik[i];
 
     return *this;
@@ -116,24 +116,22 @@ unsigned int OkreslStopien(const char* napis) {
     }
     return maksStopien;
 }
-float* PrzydzielPamiec(int stopien) {
-    float* tab = new float[stopien + 1];
+double* PrzydzielPamiec(int stopien) {
+    float* tab = new double[stopien + 1];
     for (int i = 0; i <= stopien; i++)
         tab[i] = 0.0f;
     return tab;
 }
 
-const char* AnalizujJednomian(const char* napis, Wielomian* w)
-{
+const char* AnalizujJednomian(const char* napis, Wielomian* w) {
     napis = PominOdstepy(napis);
     if (*napis == '\0') return napis;
 
     int wykladnik = 0;
     int znak = 1;
-    float wspolczynnik = 1.0f;
+    double wspolczynnik = 1.0;
 
-    if (*napis == '-')
-    {
+    if (*napis == '-') {
         napis++;
         znak = -1;
     }
@@ -180,10 +178,10 @@ void AnalizujJednomiany(const char* napis, Wielomian* w) {
     }
 }
 
-Wielomian Analizuj(const char* napis)
-{
+Wielomian Analizuj(const char* napis) {
     Wielomian w;
     w.stopien = OkreslStopien(napis);
+    delete[] w.wspolczynnik;
     w.wspolczynnik = PrzydzielPamiec(w.stopien);
     AnalizujJednomiany(napis, &w);
 
@@ -195,7 +193,7 @@ void Pokaz(Wielomian w) {
     bool wszystkieZerowe = true;
 
     for (int i = w.stopien; i >= 0; i--) {
-        if (w.wspolczynnik[i] != 0.0f) {
+        if (w.wspolczynnik[i] != 0.0) {
             wszystkieZerowe = false;
             break;
         }
@@ -207,9 +205,9 @@ void Pokaz(Wielomian w) {
     }
 
     for (int i = w.stopien; i >= 0; i--) {
-        float wsp = w.wspolczynnik[i];
+        double wsp = w.wspolczynnik[i];
 
-        if (wsp == 0.0f) {
+        if (wsp == 0.0) {
             continue;
         }
 
@@ -227,14 +225,14 @@ void Pokaz(Wielomian w) {
             }
         }
 
-        float absWsp = wsp;
+        double absWsp = wsp;
         if (absWsp < 0)
             absWsp = -absWsp;
 
         if (i == 0)
             cout << absWsp;
         else {
-            if (absWsp != 1.0f)
+            if (absWsp != 1.0)
                 cout << absWsp;
             cout << "x";
             if (i > 1)
@@ -246,8 +244,7 @@ void Pokaz(Wielomian w) {
     cout << endl;
 }
 
-int main()
-{
+int main() {
     const char* napis1 = "3x^2-2x+5";
     const char* napis2 = "-3x^2";
     // Wielomian w = Analizuj(napis1);
@@ -255,6 +252,8 @@ int main()
     Wielomian w2(napis2);
 
     // Pokaz(w);
+    
+    return 0;
 }
 
 // TODO:
