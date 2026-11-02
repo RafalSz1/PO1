@@ -13,8 +13,9 @@ class Wielomian {
         Wielomian(const char *napis);
         Wielomian(const Wielomian &w);
         ~Wielomian();
+        Wielomian& operator=(const Wielomian& w);
         Wielomian& operator+=(const Wielomian&);
-         Wielomian& operator-=(const Wielomian&);
+        Wielomian& operator-=(const Wielomian&);
         
         unsigned int GetStopien() {
             return stopien;
@@ -81,6 +82,16 @@ Wielomian::~Wielomian() {
     delete[] wspolczynnik;
 }
 
+Wielomian& Wielomian::operator=(const Wielomian& w) {
+    if (this == &w) return *this;
+    
+    delete[] wspolczynnik;
+    stopien = w.stopien;
+    wspolczynnik = new double[stopien + 1];
+    for (unsigned int i = 0; i <= stopien; i++)
+        wspolczynnik[i] = w.wspolczynnik[i];
+    return *this;
+}
 Wielomian& Wielomian::operator+=(const Wielomian& w2) {
     if (stopien < w2.stopien) {
         double* nowy_wsp = new double[w2.stopien + 1];
@@ -321,6 +332,11 @@ int main() {
     Wielomian w3(w2);
     cout << "Kopiujacy: ";
     Pokaz(w3);
+    
+    Wielomian wPrzypisany;
+    wPrzypisany = w2;
+    cout << "Operator przypisania (=): ";
+    Pokaz(wPrzypisany);
 
     w2 += w1;
     cout << "w2 += w1: ";
