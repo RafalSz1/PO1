@@ -1,15 +1,57 @@
 #include <iostream>
 #include <cstring>
+#include <cstdlib>
 
 using namespace std;
+
+unsigned int OkreslStopien(const char* napis);
+void AnalizujJednomiany(const char* napis, class Wielomian* w);
 
 class Wielomian {
     double* wspolczynnik;
     unsigned int stopien;
-public:
-    Wielomian(const char*);
-    Wielomian& operator+=(const Wielomian&);
+    public:
+        Wielomian();
+        Wielomian(int st, double *wsp);
+        Wielomian(const char *napis);
+        Wielomian(Wielomian &w);
+        ~Wielomian();
+        Wielomian& operator+=(const Wielomian&);
 };
+
+Wielomian::Wielomian() {
+    stopien = 0;
+    wspolczynnik = new double[1];
+    wspolczynnik[0] = 0.0;
+}
+
+Wielomian::Wielomian(int st, double *wsp) {
+    stopien = st;
+    wspolczynnik = new double[stopien + 1];
+    for (unsigned int i = 0; i <= stopien; i++) {
+        wspolczynnik[i] = (wsp != 0) ? wsp[i] : 0.0;
+    }
+}
+
+Wielomian::Wielomian(const char *napis) {
+    stopien = OkreslStopien(napis);
+    wspolczynnik = new double[stopien + 1];
+    for (unsigned int i = 0; i <= stopien; i++)
+        wspolczynnik[i] = 0.0;
+    AnalizujJednomiany(napis, this);
+}
+
+Wielomian::Wielomian(Wielomian &w) {
+    stopien = w.stopien;
+    wspolczynnik = new double[stopien + 1];
+    for (unsigned int i = 0; i <= stopien; i++) {
+        wspolczynnik[i] = w.wspolczynnik[i];
+    }
+}
+
+Wielomian::~Wielomian() {
+    delete[] wspolczynnik;
+}
 
 Wielomian& Wielomian::operator+=(const Wielomian& w2) {
     if (stopien < w2.stopien) {
