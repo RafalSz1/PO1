@@ -4,9 +4,6 @@
 
 using namespace std;
 
-unsigned int OkreslStopien(const char* napis);
-void AnalizujJednomiany(const char* napis, class Wielomian* w);
-
 class Wielomian {
     double* wspolczynnik;
     unsigned int stopien;
@@ -17,7 +14,37 @@ class Wielomian {
         Wielomian(Wielomian &w);
         ~Wielomian();
         Wielomian& operator+=(const Wielomian&);
+        
+        unsigned int GetStopien() {
+            return stopien;
+        }
+        double GetWspolczynnik(unsigned int i) {
+            if (i <= stopien) {
+                return wspolczynnik[i];
+            }
+            return 0.0;
+        }
+        void SetWspolczynnik(unsigned int i, double wartosc) {
+            if (i <= stopien) {
+                wspolczynnik[i] = wartosc;
+            }
+        }
+        void SetStopien(unsigned int st) {
+            if (st == stopien) return;
+            
+            double* nowy_wsp = new double[st + 1];
+            for (unsigned int i = 0; i <= st; i++) {
+                nowy_wsp[i] = (i <= stopien) ? wspolczynnik[i] : 0.0;
+            }
+            
+            delete[] wspolczynnik;
+            wspolczynnik = nowy_wsp;
+            stopien = st;
+        }
 };
+
+unsigned int OkreslStopien(const char* napis);
+void AnalizujJednomiany(const char* napis, class Wielomian* w);
 
 Wielomian::Wielomian() {
     stopien = 0;
@@ -117,7 +144,7 @@ unsigned int OkreslStopien(const char* napis) {
     return maksStopien;
 }
 double* PrzydzielPamiec(int stopien) {
-    float* tab = new double[stopien + 1];
+    double* tab = new double[stopien + 1];
     for (int i = 0; i <= stopien; i++)
         tab[i] = 0.0f;
     return tab;
@@ -164,7 +191,7 @@ const char* AnalizujJednomian(const char* napis, Wielomian* w) {
     else
         wykladnik = 0;
 
-    w->wspolczynnik[wykladnik] = znak * wspolczynnik;
+    w->SetWspolczynnik(wykladnik, znak * wspolczynnik);
 
     return napis;
 
@@ -180,9 +207,10 @@ void AnalizujJednomiany(const char* napis, Wielomian* w) {
 
 Wielomian Analizuj(const char* napis) {
     Wielomian w;
-    w.stopien = OkreslStopien(napis);
-    delete[] w.wspolczynnik;
-    w.wspolczynnik = PrzydzielPamiec(w.stopien);
+    w.SetStopien(OkreslStopien(napis));
+    for (unsigned int i = 0; i <= w.GetStopien(); i++) {
+        w.SetWspolczynnik(i, 0.0);
+    }
     AnalizujJednomiany(napis, &w);
 
     return w;
@@ -192,8 +220,8 @@ void Pokaz(Wielomian w) {
     bool pierwszy = true;
     bool wszystkieZerowe = true;
 
-    for (int i = w.stopien; i >= 0; i--) {
-        if (w.wspolczynnik[i] != 0.0) {
+    for (int i = w.GetStopien(); i >= 0; i--) {
+        if (w.GetWspolczynnik(i) != 0.0) {
             wszystkieZerowe = false;
             break;
         }
@@ -204,8 +232,8 @@ void Pokaz(Wielomian w) {
         return;
     }
 
-    for (int i = w.stopien; i >= 0; i--) {
-        double wsp = w.wspolczynnik[i];
+    for (int i = w.GetStopien(); i >= 0; i--) {
+        double wsp = w.GetWspolczynnik(i);
 
         if (wsp == 0.0) {
             continue;
@@ -251,7 +279,13 @@ int main() {
     Wielomian w1(napis1);
     Wielomian w2(napis2);
 
-    // Pokaz(w);
+    cout << "W1: ";
+    Pokaz(w1);
+    cout << "W2: ";
+    Pokaz(w2);
+    w1 += w2;
+    cout << "W1 + W2: ";
+    Pokaz(w1);
     
     return 0;
 }
