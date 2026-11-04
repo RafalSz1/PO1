@@ -151,14 +151,16 @@ Wielomian& Wielomian::operator-=(const Wielomian& w2) {
     return *this;
 }
 
-Wielomian operator+(Wielomian w1, Wielomian w2) {
-    w1 += w2;
-    return w1;
+Wielomian operator+(const Wielomian& w1,const Wielomian& w2) {
+    Wielomian suma(w1);
+    suma += w2;
+    return suma;
 }
 
-Wielomian operator-(Wielomian w1, Wielomian w2) {
-    w1 -= w2;
-    return w1;
+Wielomian operator-(const Wielomian& w1,const Wielomian& w2) {
+    Wielomian roznica(w1);
+    roznica -= w2;
+    return roznica;
 }
 
 // char* UsunOdstepy(const char* napis) {
