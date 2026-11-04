@@ -17,11 +17,14 @@ public:
     Wielomian& operator=(const Wielomian& w);
     Wielomian& operator+=(const Wielomian&);
     Wielomian& operator-=(const Wielomian&);
+    Wielomian& operator/=(const Wielomian&);
+    Wielomian& operator+=(double c);
+    Wielomian& operator-=(double c);
 
-    unsigned int GetStopien() {
+    unsigned int GetStopien() const {
         return stopien;
     }
-    double GetWspolczynnik(unsigned int i) {
+    double GetWspolczynnik(unsigned int i) const {
         if (i <= stopien) {
             return wspolczynnik[i];
         }
@@ -48,7 +51,7 @@ public:
     unsigned int OkreslStopien(const char* napis);
     const char* AnalizujJednomian(const char* napis);
     void AnalizujJednomiany(const char* napis);
-    void Pokaz();
+    void Pokaz() const;
 };
 
 Wielomian::Wielomian() {
@@ -151,6 +154,13 @@ Wielomian& Wielomian::operator-=(const Wielomian& w2) {
     return *this;
 }
 
+Wielomian& Wielomian::operator/=(const Wielomian& w2) {
+
+
+
+    return *this;
+}
+
 Wielomian operator+(const Wielomian& w1,const Wielomian& w2) {
     Wielomian suma(w1);
     suma += w2;
@@ -161,6 +171,46 @@ Wielomian operator-(const Wielomian& w1,const Wielomian& w2) {
     Wielomian roznica(w1);
     roznica -= w2;
     return roznica;
+}
+
+Wielomian& Wielomian::operator+=(double c) {
+    wspolczynnik[0] += c;
+    return *this;
+}
+
+Wielomian& Wielomian::operator-=(double c) {
+    wspolczynnik[0] -= c;
+    return *this;
+}
+
+Wielomian operator+(const Wielomian& w, double c) {
+    Wielomian suma(w);
+    suma += c;
+    return suma;
+}
+
+Wielomian operator+(double c, const Wielomian& w) {
+    return w + c;
+}
+
+Wielomian operator-(const Wielomian& w, double c) {
+    Wielomian roznica(w);
+    roznica -= c;
+    return roznica;
+}
+
+//Wielomian operator-(double c, const Wielomian& w) {
+//    return w - c;
+//}
+
+Wielomian operator-(double c, const Wielomian& w) {
+    Wielomian wynik;
+    wynik.SetStopien(w.GetStopien());
+    wynik.SetWspolczynnik(0, c - w.GetWspolczynnik(0));
+    for (unsigned int i = 1; i <= w.GetStopien(); i++) {
+        wynik.SetWspolczynnik(i, -w.GetWspolczynnik(i));
+    }
+    return wynik;
 }
 
 // char* UsunOdstepy(const char* napis) {
@@ -278,7 +328,7 @@ void Wielomian::AnalizujJednomiany(const char* napis) {
 //    return w;
 //}
 
-void Wielomian::Pokaz() {
+void Wielomian::Pokaz() const {
     bool pierwszy = true;
     bool wszystkieZerowe = true;
 
@@ -374,6 +424,21 @@ int main() {
     w3.Pokaz();
     Wielomian w5 = w3 - w1;
     cout << "w3 - w1: ";
+    w5.Pokaz();
+
+    w5 = w5 - 5;
+    w5.Pokaz();
+    w5 = 5 - w5;
+    w5.Pokaz();
+
+    w5 = w5 + 5;
+    w5.Pokaz();
+    w5 = 5 + w5;
+    w5.Pokaz();
+
+    w5 -= 5;
+    w5.Pokaz();
+    w5 += 5;
     w5.Pokaz();
 
     return 0;
