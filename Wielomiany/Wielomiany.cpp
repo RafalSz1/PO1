@@ -154,11 +154,17 @@ Wielomian& Wielomian::operator-=(const Wielomian& w2) {
     return *this;
 }
 
-Wielomian& Wielomian::operator/=(const Wielomian& w2) {
+Wielomian& Wielomian::operator/=(const Wielomian& w2, Wielomian) {
 
+    reszta = *this;
+    Wielomian wynik = 0;
+    while (stopien >= w2.stopien) {
+        Wielomian j; // iloraz jednomianów o najwiekszym wykladniku
+        wynik += j;
+        reszta -= w2 * j;
+    }
 
-
-    return *this;
+    //return *this;
 }
 
 Wielomian operator+(const Wielomian& w1,const Wielomian& w2) {
@@ -198,10 +204,6 @@ Wielomian operator-(const Wielomian& w, double c) {
     roznica -= c;
     return roznica;
 }
-
-//Wielomian operator-(double c, const Wielomian& w) {
-//    return w - c;
-//}
 
 Wielomian operator-(double c, const Wielomian& w) {
     Wielomian wynik;
