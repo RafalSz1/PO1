@@ -10,6 +10,7 @@ class Wielomian {
 public:
     Wielomian();
     Wielomian(int st, double* wsp);
+    Wielomian(double* wsp, unsigned int liczba);
     Wielomian(const char* napis);
     Wielomian(const Wielomian& w);
     ~Wielomian();
@@ -61,6 +62,20 @@ Wielomian::Wielomian(int st, double* wsp) {
     wspolczynnik = new double[stopien + 1];
     for (unsigned int i = 0; i <= stopien; i++) {
         wspolczynnik[i] = (wsp != 0) ? wsp[i] : 0.0;
+    }
+}
+Wielomian::Wielomian(double* wsp, unsigned int liczba) {
+    if (liczba == 0) {
+        stopien = 0;
+        wspolczynnik = new double[1];
+        wspolczynnik[0] = 0.0;
+    }
+    else {
+        stopien = liczba - 1;
+        wspolczynnik = new double[stopien + 1];
+        for (unsigned int i = 0; i <= stopien; i++) {
+            wspolczynnik[i] = (wsp != nullptr) ? wsp[i] : 0.0;
+        }
     }
 }
 
