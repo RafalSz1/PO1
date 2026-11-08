@@ -19,8 +19,11 @@ public:
     Wielomian& operator-=(const Wielomian&);
     struct WynikDzielenia operator/=(const Wielomian&);
     Wielomian& operator*=(const Wielomian& w);
+    
     Wielomian& operator+=(double c);
     Wielomian& operator-=(double c);
+    Wielomian& operator*=(double c);
+    Wielomian& operator/=(double c);
 
     unsigned int GetStopien() const {
         return stopien;
@@ -185,6 +188,23 @@ Wielomian operator*(const Wielomian& w1, const Wielomian& w2) {
     return wynik;
 }
 
+Wielomian& Wielomian::operator*=(double c) {
+    for (unsigned int i = 0; i <= stopien; i++) {
+        wspolczynnik[i] *= c;
+    }
+    return *this;
+}
+
+Wielomian operator*(const Wielomian& w, double c) {
+    Wielomian wynik(w);
+    wynik *= c;
+    return wynik;
+}
+
+Wielomian operator*(double c, const Wielomian& w) {
+    return w * c;
+}
+
 WynikDzielenia Wielomian::operator/=(const Wielomian& w2) {
     WynikDzielenia wynik;
     
@@ -247,9 +267,24 @@ WynikDzielenia Wielomian::operator/=(const Wielomian& w2) {
     return wynik;
 }
 
+Wielomian& Wielomian::operator/=(double c) {
+    if (c != 0.0) {
+        for (unsigned int i = 0; i <= stopien; i++) {
+            wspolczynnik[i] /= c;
+        }
+    }
+    return *this;
+}
+
 WynikDzielenia operator/(const Wielomian& w1, const Wielomian& w2) {
     Wielomian temp(w1);
     return (temp /= w2);
+}
+
+Wielomian operator/(const Wielomian& w, double c) {
+    Wielomian wynik(w);
+    wynik /= c;
+    return wynik;
 }
 
 Wielomian operator+(const Wielomian& w1,const Wielomian& w2) {
@@ -546,6 +581,6 @@ int main() {
     wynik = w3 / w3;
     wynik.iloraz.Pokaz();
     wynik.reszta.Pokaz();
-
+    
     return 0;
 }
