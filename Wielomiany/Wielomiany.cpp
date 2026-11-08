@@ -17,7 +17,8 @@ public:
     Wielomian& operator=(const Wielomian& w);
     Wielomian& operator+=(const Wielomian&);
     Wielomian& operator-=(const Wielomian&);
-    Wielomian& operator/=(const Wielomian&);
+    struct WynikDzielenia operator/=(const Wielomian&);
+    Wielomian& operator*=(const Wielomian& w);
     Wielomian& operator+=(double c);
     Wielomian& operator-=(double c);
 
@@ -52,6 +53,11 @@ public:
     const char* AnalizujJednomian(const char* napis);
     void AnalizujJednomiany(const char* napis);
     void Pokaz() const;
+};
+
+struct WynikDzielenia {
+    Wielomian iloraz;
+    Wielomian reszta;
 };
 
 Wielomian::Wielomian() {
@@ -154,17 +160,96 @@ Wielomian& Wielomian::operator-=(const Wielomian& w2) {
     return *this;
 }
 
-Wielomian& Wielomian::operator/=(const Wielomian& w2, Wielomian) {
-
-    reszta = *this;
-    Wielomian wynik = 0;
-    while (stopien >= w2.stopien) {
-        Wielomian j; // iloraz jednomianów o najwiekszym wykladniku
-        wynik += j;
-        reszta -= w2 * j;
+Wielomian& Wielomian::operator*=(const Wielomian& w) {
+    unsigned int nowy_stopien = stopien + w.stopien;
+    double* nowe_wsp = new double[nowy_stopien + 1];
+    for (unsigned int i = 0; i <= nowy_stopien; i++) {
+        nowe_wsp[i] = 0.0;
     }
 
-    //return *this;
+    for (unsigned int i = 0; i <= stopien; i++) {
+        for (unsigned int j = 0; j <= w.stopien; j++) {
+            nowe_wsp[i + j] += wspolczynnik[i] * w.wspolczynnik[j];
+        }
+    }
+
+    delete[] wspolczynnik;
+    stopien = nowy_stopien;
+    wspolczynnik = nowe_wsp;
+    return *this;
+}
+
+Wielomian operator*(const Wielomian& w1, const Wielomian& w2) {
+    Wielomian wynik(w1);
+    wynik *= w2;
+    return wynik;
+}
+
+WynikDzielenia Wielomian::operator/=(const Wielomian& w2) {
+    WynikDzielenia wynik;
+    
+    if (w2.stopien == 0 && w2.wspolczynnik[0] == 0.0) {
+        wynik.iloraz = *this;
+        wynik.reszta = Wielomian();
+        return wynik;
+    }
+
+    if (stopien < w2.stopien) {
+        wynik.iloraz = Wielomian();
+        wynik.reszta = *this;
+        return wynik;
+    }
+
+    unsigned int wynik_stopien = stopien - w2.stopien;
+    double* wynik_wsp = new double[wynik_stopien + 1];
+    for (unsigned int i = 0; i <= wynik_stopien; i++) {
+        wynik_wsp[i] = 0.0;
+    }
+
+    Wielomian reszta = *this;
+
+    while (reszta.stopien >= w2.stopien && !(reszta.stopien == 0 && reszta.wspolczynnik[0] == 0.0)) {
+        unsigned int diff_stopien = reszta.stopien - w2.stopien;
+        double wsp_ilorazu = reszta.wspolczynnik[reszta.stopien] / w2.wspolczynnik[w2.stopien];
+
+        wynik_wsp[diff_stopien] = wsp_ilorazu;
+
+        double* wsp_jedn = new double[diff_stopien + 1];
+        for (unsigned int k = 0; k <= diff_stopien; k++) wsp_jedn[k] = 0.0;
+        wsp_jedn[diff_stopien] = wsp_ilorazu;
+        
+        Wielomian jednomian(diff_stopien, wsp_jedn);
+        delete[] wsp_jedn;
+        
+        Wielomian w2_kopia = w2;
+        reszta -= (w2_kopia * jednomian);
+        
+        unsigned int nowy_stopien_reszty = reszta.stopien;
+        while (nowy_stopien_reszty > 0 && reszta.wspolczynnik[nowy_stopien_reszty] == 0.0) {
+            nowy_stopien_reszty--;
+        }
+        if (nowy_stopien_reszty != reszta.stopien) {
+            reszta.SetStopien(nowy_stopien_reszty);
+        }
+
+        if (reszta.stopien == 0 && reszta.wspolczynnik[0] == 0.0) {
+            break;
+        }
+    }
+
+    delete[] wspolczynnik;
+    stopien = wynik_stopien;
+    wspolczynnik = wynik_wsp;
+
+    wynik.iloraz = *this;
+    wynik.reszta = reszta;
+
+    return wynik;
+}
+
+WynikDzielenia operator/(const Wielomian& w1, const Wielomian& w2) {
+    Wielomian temp(w1);
+    return (temp /= w2);
 }
 
 Wielomian operator+(const Wielomian& w1,const Wielomian& w2) {
@@ -442,6 +527,25 @@ int main() {
     w5.Pokaz();
     w5 += 5;
     w5.Pokaz();
+    
+    w3.Pokaz();
+    w5.Pokaz();
+    
+    WynikDzielenia wynik = (w5 /= w3);
+
+    wynik.iloraz.Pokaz();
+    wynik.reszta.Pokaz();
+    w5.Pokaz();
+    
+    w3 *= w3;
+    w3.Pokaz();
+    
+    w3 = w3 * w3;
+    w3.Pokaz();
+    
+    wynik = w3 / w3;
+    wynik.iloraz.Pokaz();
+    wynik.reszta.Pokaz();
 
     return 0;
 }
