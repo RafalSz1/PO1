@@ -96,6 +96,7 @@ Wielomian::Wielomian(double* wsp, unsigned int liczba) {
 }
 
 Wielomian::Wielomian(const char* napis) {
+    //Analizuj(napis);
     stopien = OkreslStopien(napis);
     wspolczynnik = new double[stopien + 1];
     for (unsigned int i = 0; i <= stopien; i++)
@@ -373,6 +374,7 @@ istream& operator>>(istream& is, Wielomian& w) {
 
     if (strlen(bufor) > 0) {
         w = Wielomian(bufor);
+        //Analizuj(w);
     }
     return is;
 }
@@ -636,7 +638,6 @@ int main() {
     cout << "Podaj wielomian: ";
     cin >> w1;
     cout << w1 << endl;
-
 
     return 0;
 }
