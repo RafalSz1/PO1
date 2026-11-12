@@ -19,11 +19,15 @@ public:
     Wielomian& operator-=(const Wielomian&);
     struct WynikDzielenia operator/=(const Wielomian&);
     Wielomian& operator*=(const Wielomian& w);
-    
+
     Wielomian& operator+=(double c);
     Wielomian& operator-=(double c);
     Wielomian& operator*=(double c);
     Wielomian& operator/=(double c);
+
+    double operator()(double x);
+    double& operator[](unsigned int i);
+    const double operator[](unsigned int i) const;
 
     unsigned int GetStopien() const {
         return stopien;
@@ -109,6 +113,28 @@ Wielomian::Wielomian(const Wielomian& w) {
 
 Wielomian::~Wielomian() {
     delete[] wspolczynnik;
+}
+
+double Wielomian::operator()(double x) {
+    if (stopien == 0) return wspolczynnik[0];
+
+    double wynik = wspolczynnik[stopien];
+    for (unsigned int i = stopien; i > 0; --i) {
+        wynik = wynik * x + wspolczynnik[i - 1];
+    }
+    return wynik;
+}
+
+double& Wielomian::operator[](unsigned int i) {
+    if (i > stopien) {
+        SetStopien(i);
+    }
+    return wspolczynnik[i];
+}
+
+const double Wielomian::operator[](unsigned int i) const {
+    if (i <= stopien && i >= 0) return wspolczynnik[i];
+    return 0.0;
 }
 
 Wielomian& Wielomian::operator=(const Wielomian& w) {
@@ -207,7 +233,7 @@ Wielomian operator*(double c, const Wielomian& w) {
 
 WynikDzielenia Wielomian::operator/=(const Wielomian& w2) {
     WynikDzielenia wynik;
-    
+
     if (w2.stopien == 0 && w2.wspolczynnik[0] == 0.0) {
         wynik.iloraz = *this;
         wynik.reszta = Wielomian();
@@ -237,13 +263,13 @@ WynikDzielenia Wielomian::operator/=(const Wielomian& w2) {
         double* wsp_jedn = new double[diff_stopien + 1];
         for (unsigned int k = 0; k <= diff_stopien; k++) wsp_jedn[k] = 0.0;
         wsp_jedn[diff_stopien] = wsp_ilorazu;
-        
+
         Wielomian jednomian(diff_stopien, wsp_jedn);
         delete[] wsp_jedn;
-        
+
         Wielomian w2_kopia = w2;
         reszta -= (w2_kopia * jednomian);
-        
+
         unsigned int nowy_stopien_reszty = reszta.stopien;
         while (nowy_stopien_reszty > 0 && reszta.wspolczynnik[nowy_stopien_reszty] == 0.0) {
             nowy_stopien_reszty--;
@@ -287,13 +313,13 @@ Wielomian operator/(const Wielomian& w, double c) {
     return wynik;
 }
 
-Wielomian operator+(const Wielomian& w1,const Wielomian& w2) {
+Wielomian operator+(const Wielomian& w1, const Wielomian& w2) {
     Wielomian suma(w1);
     suma += w2;
     return suma;
 }
 
-Wielomian operator-(const Wielomian& w1,const Wielomian& w2) {
+Wielomian operator-(const Wielomian& w1, const Wielomian& w2) {
     Wielomian roznica(w1);
     roznica -= w2;
     return roznica;
@@ -333,6 +359,22 @@ Wielomian operator-(double c, const Wielomian& w) {
         wynik.SetWspolczynnik(i, -w.GetWspolczynnik(i));
     }
     return wynik;
+}
+
+ostream& operator<<(ostream& os, const Wielomian& w) {
+    w.Pokaz();
+    return os;
+}
+
+istream& operator>>(istream& is, Wielomian& w) {
+    char bufor[1024];
+
+    is.getline(bufor, sizeof(bufor));
+
+    if (strlen(bufor) > 0) {
+        w = Wielomian(bufor);
+    }
+    return is;
 }
 
 // char* UsunOdstepy(const char* napis) {
@@ -562,25 +604,45 @@ int main() {
     w5.Pokaz();
     w5 += 5;
     w5.Pokaz();
-    
+
     w3.Pokaz();
     w5.Pokaz();
-    
+
     WynikDzielenia wynik = (w5 /= w3);
 
     wynik.iloraz.Pokaz();
     wynik.reszta.Pokaz();
     w5.Pokaz();
-    
+
     w3 *= w3;
     w3.Pokaz();
-    
+
     w3 = w3 * w3;
     w3.Pokaz();
-    
+
     wynik = w3 / w3;
     wynik.iloraz.Pokaz();
     wynik.reszta.Pokaz();
-    
+
+    w1.Pokaz();
+    cout << w1(2) << endl;
+
+    w1.Pokaz();
+    cout << w1[1] << endl;
+    w1[1] = 5;
+    w1.Pokaz();
+    cout << w1 << endl;
+
+    cout << "Podaj wielomian: ";
+    cin >> w1;
+    cout << w1 << endl;
+
+
     return 0;
 }
+
+// TODO:
+// Podzielić program na Wielomian.h, Wielomian.cpp, Main.cpp
+// dodać np. #ifdef __WIELOMIAN_H 
+// #define __WIELOMIAN_H
+// #endif
