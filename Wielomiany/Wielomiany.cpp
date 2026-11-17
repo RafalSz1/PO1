@@ -1,4 +1,4 @@
-#include "wielomiany.h"
+#include "Wielomiany.h"
 #include <cstring>
 #include <cstdlib>
 
