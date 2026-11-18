@@ -248,9 +248,9 @@ Wielomian operator/(const Wielomian& w, double c) {
     return wynik;
 
 }
-Wielomian& operator%=(Wielomian& w1, const Wielomian& w2) {
-    w1 = (w1 /= w2).reszta;
-    return w1;
+Wielomian& Wielomian::operator%=(const Wielomian& w2) {
+    *this = ((*this) /= w2).reszta;
+    return *this;
 }
 
 Wielomian operator%(const Wielomian& w1, const Wielomian& w2) {
@@ -332,6 +332,10 @@ istream& operator>>(istream& is, Wielomian& w) {
 // }
 
 Wielomian Wielomian::Pochodna(int ktora) {
+    if (ktora <= 0) return *this;
+
+    if (stopien == 0 || ktora > stopien)
+        return Wielomian();
     if (ktora > 1)
         return Pochodna().Pochodna(ktora-1);
     Wielomian wynik(stopien-1);
