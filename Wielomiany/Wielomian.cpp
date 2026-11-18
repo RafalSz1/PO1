@@ -11,9 +11,8 @@ Wielomian::Wielomian() {
 Wielomian::Wielomian(int st, double* wsp) {
     stopien = st;
     wspolczynnik = new double[stopien + 1];
-    for (unsigned int i = 0; i <= stopien; i++) {
+    for (unsigned int i = 0; i <= stopien; i++)
         wspolczynnik[i] = (wsp != 0) ? wsp[i] : 0.0;
-    }
 }
 Wielomian::Wielomian(double* wsp, unsigned int liczba) {
     if (liczba == 0) {
