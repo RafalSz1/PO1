@@ -8,6 +8,13 @@ Wielomian::Wielomian() {
     wspolczynnik[0] = 0.0;
 }
 
+Wielomian::Wielomian(int st) {
+    stopien = st;
+    wspolczynnik = new double[stopien + 1];
+    for (unsigned int i = 0; i <= stopien; i++)
+        wspolczynnik[i] = 0.0;
+}
+
 Wielomian::Wielomian(int st, double* wsp) {
     stopien = st;
     wspolczynnik = new double[stopien + 1];
@@ -298,10 +305,8 @@ istream& operator>>(istream& is, Wielomian& w) {
 
     is.getline(bufor, sizeof(bufor));
 
-    if (strlen(bufor) > 0) {
+    if (strlen(bufor) > 0)
         w = Wielomian(bufor);
-        //Analizuj(w);
-    }
     return is;
 }
 
@@ -315,6 +320,15 @@ istream& operator>>(istream& is, Wielomian& w) {
 //     napis2[y] = 0;
 //     return napis2;
 // }
+
+Wielomian Wielomian::Pochodna(int ktora) {
+    if (ktora > 1)
+        return Pochodna().Pochodna(ktora-1);
+    Wielomian wynik(stopien-1);
+    for (int i = stopien; i > 0; i--)
+        wynik.wspolczynnik[i-1] = wspolczynnik[i] * i;
+    return wynik;
+}
 
 const char* Wielomian::PominOdstepy(const char* napis) {
     while (*napis == ' ')
