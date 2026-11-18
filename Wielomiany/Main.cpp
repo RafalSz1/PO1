@@ -1,4 +1,4 @@
-#include "Wielomiany.h"
+#include "Wielomian.h"
 
 int main() {
     Wielomian w0;
