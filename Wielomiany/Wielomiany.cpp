@@ -1,4 +1,4 @@
-#include "Wielomiany.h"
+#include "Wielomian.h"
 #include <cstring>
 #include <cstdlib>
 
@@ -55,16 +55,13 @@ double Wielomian::operator()(double x) {
     if (stopien == 0) return wspolczynnik[0];
 
     double wynik = wspolczynnik[stopien];
-    for (unsigned int i = stopien; i > 0; --i) {
+    for (unsigned int i = stopien; i > 0; --i)
         wynik = wynik * x + wspolczynnik[i - 1];
-    }
     return wynik;
 }
 
 double& Wielomian::operator[](unsigned int i) {
-    if (i > stopien) {
-        SetStopien(i);
-    }
+    if (i > stopien) SetStopien(i);
     return wspolczynnik[i];
 }
 
