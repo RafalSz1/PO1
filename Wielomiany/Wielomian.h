@@ -12,6 +12,7 @@ class Wielomian {
     unsigned int stopien;
 public:
     Wielomian();
+    Wielomian(int st);
     Wielomian(int st, double* wsp);
     Wielomian(double* wsp, unsigned int liczba);
     Wielomian(const char* napis);
@@ -64,6 +65,8 @@ public:
     const char* AnalizujJednomian(const char* napis);
     void AnalizujJednomiany(const char* napis);
     void Pokaz() const;
+    Wielomian Pochodna(int ktora = 1);
+
 };
 
 struct WynikDzielenia {
