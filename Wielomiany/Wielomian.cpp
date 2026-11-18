@@ -181,9 +181,8 @@ WynikDzielenia Wielomian::operator/=(const Wielomian& w2) {
 
     unsigned int wynik_stopien = stopien - w2.stopien;
     double* wynik_wsp = new double[wynik_stopien + 1];
-    for (unsigned int i = 0; i <= wynik_stopien; i++) {
+    for (unsigned int i = 0; i <= wynik_stopien; i++)
         wynik_wsp[i] = 0.0;
-    }
 
     Wielomian reszta = *this;
 
@@ -228,9 +227,8 @@ WynikDzielenia Wielomian::operator/=(const Wielomian& w2) {
 
 Wielomian& Wielomian::operator/=(double c) {
     if (c != 0.0) {
-        for (unsigned int i = 0; i <= stopien; i++) {
+        for (unsigned int i = 0; i <= stopien; i++)
             wspolczynnik[i] /= c;
-        }
     }
     return *this;
 }
@@ -288,9 +286,8 @@ Wielomian operator-(double c, const Wielomian& w) {
     Wielomian wynik;
     wynik.SetStopien(w.GetStopien());
     wynik.SetWspolczynnik(0, c - w.GetWspolczynnik(0));
-    for (unsigned int i = 1; i <= w.GetStopien(); i++) {
+    for (unsigned int i = 1; i <= w.GetStopien(); i++)
         wynik.SetWspolczynnik(i, -w.GetWspolczynnik(i));
-    }
     return wynik;
 }
 
@@ -323,9 +320,8 @@ istream& operator>>(istream& is, Wielomian& w) {
 // }
 
 const char* Wielomian::PominOdstepy(const char* napis) {
-    while (*napis == ' ') {
+    while (*napis == ' ')
         napis++;
-    }
     return napis;
 }
 
@@ -348,8 +344,7 @@ unsigned int Wielomian::OkreslStopien(const char* napis) {
             if (stopien > maksStopien)
                 maksStopien = stopien;
         }
-        else
-            i++;
+        else i++;
     }
     return maksStopien;
 }
