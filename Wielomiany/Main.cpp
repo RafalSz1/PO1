@@ -91,7 +91,11 @@ int main() {
 
     cout << w1.Pochodna(2) << endl;
 
-    cout << w1 % w2;
+    Wielomian w6("x");
+    cout << w1 % w6;
+    Wielomian w7("3x^2+2");
+    w7%=w6;
+    cout << w7;
 
     return 0;
 }
