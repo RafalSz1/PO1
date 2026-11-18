@@ -246,8 +246,18 @@ Wielomian operator/(const Wielomian& w, double c) {
     Wielomian wynik(w);
     wynik /= c;
     return wynik;
+
+}
+Wielomian& operator%=(Wielomian& w1, const Wielomian& w2) {
+    w1 = (w1 /= w2).reszta;
+    return w1;
 }
 
+Wielomian operator%(const Wielomian& w1, const Wielomian& w2) {
+    Wielomian temp(w1);
+    WynikDzielenia wd = (temp /= w2);
+    return wd.reszta;
+}
 Wielomian operator+(const Wielomian& w1, const Wielomian& w2) {
     Wielomian suma(w1);
     suma += w2;
