@@ -89,7 +89,9 @@ int main() {
     cin >> w1;
     cout << w1 << endl;
 
-    cout << w1.Pochodna(2);
+    cout << w1.Pochodna(2) << endl;
+
+    cout << w1 % w2;
 
     return 0;
 }
