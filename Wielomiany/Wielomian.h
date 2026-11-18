@@ -24,6 +24,7 @@ public:
     Wielomian& operator-=(const Wielomian&);
     WynikDzielenia operator/=(const Wielomian&);
     Wielomian& operator*=(const Wielomian& w);
+    Wielomian& operator%=(const Wielomian&);
 
     Wielomian& operator+=(double c);
     Wielomian& operator-=(double c);
@@ -88,6 +89,7 @@ Wielomian operator+(double c, const Wielomian& w);
 Wielomian operator-(const Wielomian& w, double c);
 Wielomian operator-(double c, const Wielomian& w);
 Wielomian operator/(const Wielomian& w, double c);
+Wielomian operator%(const Wielomian& w1, const Wielomian& w2);
 
 ostream& operator<<(ostream& os, const Wielomian& w);
 istream& operator>>(istream& is, Wielomian& w);
