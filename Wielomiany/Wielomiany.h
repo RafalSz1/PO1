@@ -1,5 +1,5 @@
-#ifndef WIELOMIANY_H
-#define WIELOMIANY_H
+#ifndef WIELOMIAN_H
+#define WIELOMIAN_H
 
 #include <iostream>
 
@@ -17,7 +17,7 @@ public:
     Wielomian(const char* napis);
     Wielomian(const Wielomian& w);
     ~Wielomian();
-    
+
     Wielomian& operator=(const Wielomian& w);
     Wielomian& operator+=(const Wielomian&);
     Wielomian& operator-=(const Wielomian&);
