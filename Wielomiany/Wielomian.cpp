@@ -24,9 +24,8 @@ Wielomian::Wielomian(double* wsp, unsigned int liczba) {
     else {
         stopien = liczba - 1;
         wspolczynnik = new double[stopien + 1];
-        for (unsigned int i = 0; i <= stopien; i++) {
+        for (unsigned int i = 0; i <= stopien; i++)
             wspolczynnik[i] = (wsp != nullptr) ? wsp[i] : 0.0;
-        }
     }
 }
 
@@ -42,9 +41,8 @@ Wielomian::Wielomian(const char* napis) {
 Wielomian::Wielomian(const Wielomian& w) {
     stopien = w.stopien;
     wspolczynnik = new double[stopien + 1];
-    for (unsigned int i = 0; i <= stopien; i++) {
+    for (unsigned int i = 0; i <= stopien; i++)
         wspolczynnik[i] = w.wspolczynnik[i];
-    }
 }
 
 Wielomian::~Wielomian() {
