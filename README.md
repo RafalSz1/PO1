@@ -2,14 +2,14 @@
 
 ## Zad 1: Klasa Wielomian
  - [x] analiza składni (napis -> wielomian)
- - [ ] klasa Wielomian
-   - [ ] analiza składni jako konstruktor
-   - [ ] pozostałe konstruktory
-   - [ ] metoda Pokaz() 
- - [ ] operatory += (metoda klasy) i +
- - [ ] pozostałe operatory arytmetyczne: -= - *= * /= / %= % (różne konteksty: wielomiany i liczby)
- - [ ] dodatkowe operatory: () [] << >> 
- - [ ] podział na pliki Wielomian.h, Wielomian.cpp, testy.cpp
+ - [x] klasa Wielomian
+   - [x] analiza składni jako konstruktor
+   - [x] pozostałe konstruktory
+   - [x] metoda Pokaz() 
+ - [x] operatory += (metoda klasy) i +
+ - [x] pozostałe operatory arytmetyczne: -= - *= * /= / %= % (różne konteksty: wielomiany i liczby)
+ - [x] dodatkowe operatory: () [] << >> 
+ - [x] podział na pliki Wielomian.h, Wielomian.cpp, Main.cpp
 
 ## Zad 2: Dziedziczenie wielomianów
 - [ ] A. Klasa Jednomian jako potomna klasy Wielomian
