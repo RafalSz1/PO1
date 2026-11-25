@@ -12,13 +12,13 @@ protected:
     unsigned int stopien;
 public:
     BazaWielomianu() : stopien(0) {}
+    BazaWielomianu(unsigned int st) : stopien(st) {}
     virtual ~BazaWielomianu() {}
 
     unsigned int GetStopien() const { return stopien; }
 
-    virtual double& operator[](unsigned int i);
-    virtual const double operator[](unsigned int i) const;
-
+    virtual double& operator[](unsigned int i) = 0;
+    virtual const double operator[](unsigned int i) const = 0;
 
     double operator()(double x) const;
     void Pokaz() const;
@@ -36,24 +36,22 @@ public:
     Wielomian(const BazaWielomianu& w);
     virtual ~Wielomian();
 
-    Wielomian& operator=(const BazaWielomianu&);
-    Wielomian& operator+=(const BazaWielomianu&);
-    Wielomian& operator-=(const BazaWielomianu&);
-    WynikDzielenia operator/=(const BazaWielomianu&);
-    Wielomian& operator*=(const BazaWielomianu&);
-    Wielomian& operator%=(const BazaWielomianu&);
+    Wielomian& operator=(const Wielomian& w);
+    Wielomian& operator=(const BazaWielomianu& w);
+    Wielomian& operator+=(const BazaWielomianu& w);
+    Wielomian& operator-=(const BazaWielomianu& w);
+    WynikDzielenia operator/=(const BazaWielomianu& w);
+    Wielomian& operator*=(const BazaWielomianu& w);
+    Wielomian& operator%=(const BazaWielomianu& w);
 
     Wielomian& operator+=(double c);
     Wielomian& operator-=(double c);
     Wielomian& operator*=(double c);
     Wielomian& operator/=(double c);
 
-    double& operator[](unsigned int i);
-    const double operator[](unsigned int i) const;
+    double& operator[](unsigned int i) override;
+    double const operator[](unsigned int i) const override;
 
-    unsigned int GetStopien() const {
-        return stopien;
-    }
     double GetWspolczynnik(unsigned int i) const {
         if (i <= stopien) {
             return wspolczynnik[i];
@@ -65,31 +63,31 @@ public:
             wspolczynnik[i] = wartosc;
         }
     }
-    void SetStopien(unsigned int st) {
-        if (st == stopien) return;
+    void SetStopien(unsigned int st);
 
-        double* nowy_wsp = new double[st + 1];
-        for (unsigned int i = 0; i <= st; i++) {
-            nowy_wsp[i] = (i <= stopien) ? wspolczynnik[i] : 0.0;
-        }
-
-        delete[] wspolczynnik;
-        wspolczynnik = nowy_wsp;
-        stopien = st;
-    }
     const char* PominOdstepy(const char* napis);
     unsigned int OkreslStopien(const char* napis);
     const char* AnalizujJednomian(const char* napis);
     void AnalizujJednomiany(const char* napis);
     Wielomian Pochodna(int ktora = 1);
-
 };
 
 class Jednomian : public BazaWielomianu {
     double wspolczynnik;
 public:
     Jednomian();
-    Jednomian(int st, double wsp);
+    Jednomian(unsigned int st, double wsp);
+    Jednomian(const Jednomian& j);
+    
+    double& operator[](unsigned int i) override;
+    double const operator[](unsigned int i) const override;
+    
+    Jednomian& operator=(const Jednomian& j);
+    Jednomian& operator*=(const Jednomian& j);
+    Jednomian& operator*=(double c);
+    Jednomian& operator/=(double c);
+    
+    Jednomian Pochodna(int ktora = 1) const;
 };
 
 struct WynikDzielenia {
@@ -99,10 +97,16 @@ struct WynikDzielenia {
 
 double* PrzydzielPamiec(int stopien);
 
+Jednomian operator*(const Jednomian& j1, const Jednomian& j2);
+Jednomian operator*(const Jednomian& j, double c);
+Jednomian operator*(double c, const Jednomian& j);
+Jednomian operator/(const Jednomian& j, double c);
+
 Wielomian operator*(const BazaWielomianu& w1, const BazaWielomianu& w2);
 WynikDzielenia operator/(const BazaWielomianu& w1, const BazaWielomianu& w2);
 Wielomian operator+(const BazaWielomianu& w1, const BazaWielomianu& w2);
 Wielomian operator-(const BazaWielomianu& w1, const BazaWielomianu& w2);
+Wielomian operator%(const BazaWielomianu& w1, const BazaWielomianu& w2);
 
 Wielomian operator*(const BazaWielomianu& w, double c);
 Wielomian operator*(double c, const BazaWielomianu& w);
@@ -111,9 +115,8 @@ Wielomian operator+(double c, const BazaWielomianu& w);
 Wielomian operator-(const BazaWielomianu& w, double c);
 Wielomian operator-(double c, const BazaWielomianu& w);
 Wielomian operator/(const BazaWielomianu& w, double c);
-Wielomian operator%(const BazaWielomianu& w1, const BazaWielomianu& w2);
 
 ostream& operator<<(ostream& os, const BazaWielomianu& w);
-istream& operator>>(istream& is, BazaWielomianu& w);
+istream& operator>>(istream& is, Wielomian& w);
 
 #endif
