@@ -98,5 +98,48 @@ int main() {
     w7 %= w6;
     cout << w7;
 
+    cout << "\nJednomian" << endl;
+
+    Jednomian j0;
+    Jednomian j1(2, 3.0);
+    Jednomian j2(3, 2.0);
+    cout << "j0 (domyslny): " << j0;
+    cout << "j1: " << j1;
+    cout << "j1[2] = " << j1[2] << ", j1[0] = " << j1[0] << endl;
+
+    Jednomian jMnozenie = j1 * j2;
+    Jednomian jSkalar = j1 * 4.0;
+    Jednomian jDzielenie = jSkalar / 2.0;
+    Jednomian jPochodna = j2.Pochodna();
+    cout << "j1 * j2 (Jednomian): " << jMnozenie;
+    cout << "j1 * 4 (Jednomian): " << jSkalar;
+    cout << "jSkalar / 2 (Jednomian): " << jDzielenie;
+    cout << "Pochodna j2 (Jednomian): " << jPochodna;
+
+    Wielomian wSumaJ = j1 + j2;
+    Wielomian wMix1 = w1 + j1;
+    Wielomian wMix2 = j2 - w1;
+    Wielomian wMix3 = w1 * j1;
+    cout << "j1 + j2 (Wielomian): " << wSumaJ;
+    cout << "w1 + j1: " << wMix1;
+    cout << "j2 - w1: " << wMix2;
+    cout << "w1 * j1: " << wMix3;
+
+    wMix1 += j2;
+    cout << "wMix1 += j2: " << wMix1;
+
+    Wielomian wZJednomianu(j1);
+    wZJednomianu = j2;
+    cout << "Wielomian z Jednomianu: " << wZJednomianu;
+
+    BazaWielomianu* tabBaza[2];
+    tabBaza[0] = &j1;
+    tabBaza[1] = &wSumaJ;
+
+    for (int i = 0; i < 2; i++) {
+        cout << "Baza[" << i << "]: " << *tabBaza[i];
+        cout << "Wartosc dla x=2: " << (*tabBaza[i])(2.0) << endl;
+    }
+
     return 0;
 }
