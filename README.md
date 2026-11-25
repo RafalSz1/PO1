@@ -12,7 +12,7 @@
  - [x] podział na pliki Wielomian.h, Wielomian.cpp, Main.cpp
 
 ## Zad 2: Dziedziczenie wielomianów
-- [ ] A. Klasa Jednomian jako potomna klasy Wielomian
+- [x] A. Klasa Jednomian jako potomna klasy Wielomian
   - konstruktor
   - wykorzystanie Jednomianu w dzieleniu 
 
