@@ -2,21 +2,18 @@
 #include <cstring>
 #include <cstdlib>
 
-Wielomian::Wielomian() {
-    stopien = 0;
+Wielomian::Wielomian() : BazaWielomianu(0) {
     wspolczynnik = new double[1];
     wspolczynnik[0] = 0.0;
 }
 
-Wielomian::Wielomian(int st) {
-    stopien = st;
+Wielomian::Wielomian(int st) : BazaWielomianu(st) {
     wspolczynnik = new double[stopien + 1];
     for (unsigned int i = 0; i <= stopien; i++)
         wspolczynnik[i] = 0.0;
 }
 
-Wielomian::Wielomian(int st, double* wsp) {
-    stopien = st;
+Wielomian::Wielomian(int st, double* wsp) : BazaWielomianu(st) {
     wspolczynnik = new double[stopien + 1];
     for (unsigned int i = 0; i <= stopien; i++)
         wspolczynnik[i] = (wsp != 0) ? wsp[i] : 0.0;
@@ -44,37 +41,33 @@ Wielomian::Wielomian(const char* napis) {
     AnalizujJednomiany(napis);
 }
 
-Wielomian::Wielomian(const Wielomian& w) {
-    stopien = w.stopien;
+Wielomian::Wielomian(const Wielomian& w) : BazaWielomianu(w.stopien) {
     wspolczynnik = new double[stopien + 1];
     for (unsigned int i = 0; i <= stopien; i++)
         wspolczynnik[i] = w.wspolczynnik[i];
+}
+
+Wielomian::Wielomian(const BazaWielomianu& w) : BazaWielomianu(w.GetStopien()) {
+    wspolczynnik = new double[stopien + 1];
+    for (unsigned int i = 0; i <= stopien; i++)
+        wspolczynnik[i] = w[i];
 }
 
 Wielomian::~Wielomian() {
     delete[] wspolczynnik;
 }
 
-Jednomian::Jednomian() : Wielomian(0) {
-    wspolczynnik[0] = 0.0;
-}
-
-Jednomian::Jednomian(int st, double wsp) : Wielomian(st) {
+void Wielomian::SetStopien(unsigned int st) {
+    if (st == stopien) return;
+    double* nowy_wsp = new double[st + 1];
     for (unsigned int i = 0; i <= st; i++) {
-        wspolczynnik[i] = 0.0;
+        nowy_wsp[i] = (i <= stopien) ? wspolczynnik[i] : 0.0;
     }
-    wspolczynnik[st] = wsp;
+    delete[] wspolczynnik;
+    wspolczynnik = nowy_wsp;
+    stopien = st;
 }
 
-
-double Wielomian::operator()(double x) {
-    if (stopien == 0) return wspolczynnik[0];
-
-    double wynik = wspolczynnik[stopien];
-    for (unsigned int i = stopien; i > 0; --i)
-        wynik = wynik * x + wspolczynnik[i - 1];
-    return wynik;
-}
 
 double& Wielomian::operator[](unsigned int i) {
     if (i > stopien) SetStopien(i);
@@ -82,7 +75,7 @@ double& Wielomian::operator[](unsigned int i) {
 }
 
 const double Wielomian::operator[](unsigned int i) const {
-    if (i <= stopien && i >= 0) return wspolczynnik[i];
+    if (i <= stopien) return wspolczynnik[i];
     return 0.0;
 }
 
@@ -96,58 +89,53 @@ Wielomian& Wielomian::operator=(const Wielomian& w) {
         wspolczynnik[i] = w.wspolczynnik[i];
     return *this;
 }
-Wielomian& Wielomian::operator+=(const Wielomian& w2) {
-    if (stopien < w2.stopien) {
-        double* nowy_wsp = new double[w2.stopien + 1];
 
-        for (unsigned int i = 0; i <= stopien; i++)
-            nowy_wsp[i] = wspolczynnik[i];
+Wielomian& Wielomian::operator=(const BazaWielomianu& w) {
+    if (this == &w) return *this;
 
-        for (unsigned int i = stopien + 1; i <= w2.stopien; i++)
-            nowy_wsp[i] = 0;
+    delete[] wspolczynnik;
+    stopien = w.GetStopien();
+    wspolczynnik = new double[stopien + 1];
+    for (unsigned int i = 0; i <= stopien; i++)
+        wspolczynnik[i] = w[i];
+    return *this;
+}
 
-        delete[] wspolczynnik;
-        wspolczynnik = nowy_wsp;
-        stopien = w2.stopien;
+Wielomian& Wielomian::operator+=(const BazaWielomianu& w2) {
+    unsigned int st2 = w2.GetStopien();
+    if (stopien < st2) {
+        SetStopien(st2);
     }
 
-    for (unsigned int i = 0; i <= w2.stopien; i++)
-        wspolczynnik[i] += w2.wspolczynnik[i];
+    for (unsigned int i = 0; i <= st2; i++)
+        wspolczynnik[i] += w2[i];
 
     return *this;
 }
 
-Wielomian& Wielomian::operator-=(const Wielomian& w2) {
-    if (stopien < w2.stopien) {
-        double* nowy_wsp = new double[w2.stopien + 1];
-
-        for (unsigned int i = 0; i <= stopien; i++)
-            nowy_wsp[i] = wspolczynnik[i];
-
-        for (unsigned int i = stopien + 1; i <= w2.stopien; i++)
-            nowy_wsp[i] = 0;
-
-        delete[] wspolczynnik;
-        wspolczynnik = nowy_wsp;
-        stopien = w2.stopien;
+Wielomian& Wielomian::operator-=(const BazaWielomianu& w2) {
+    unsigned int st2 = w2.GetStopien();
+    if (stopien < st2) {
+        SetStopien(st2);
     }
 
-    for (unsigned int i = 0; i <= w2.stopien; i++)
-        wspolczynnik[i] -= w2.wspolczynnik[i];
+    for (unsigned int i = 0; i <= st2; i++)
+        wspolczynnik[i] -= w2[i];
 
     return *this;
 }
 
-Wielomian& Wielomian::operator*=(const Wielomian& w) {
-    unsigned int nowy_stopien = stopien + w.stopien;
+Wielomian& Wielomian::operator*=(const BazaWielomianu& w) {
+    unsigned int st2 = w.GetStopien();
+    unsigned int nowy_stopien = stopien + st2;
     double* nowe_wsp = new double[nowy_stopien + 1];
     for (unsigned int i = 0; i <= nowy_stopien; i++) {
         nowe_wsp[i] = 0.0;
     }
 
     for (unsigned int i = 0; i <= stopien; i++) {
-        for (unsigned int j = 0; j <= w.stopien; j++) {
-            nowe_wsp[i + j] += wspolczynnik[i] * w.wspolczynnik[j];
+        for (unsigned int j = 0; j <= st2; j++) {
+            nowe_wsp[i + j] += wspolczynnik[i] * w[j];
         }
     }
 
@@ -157,61 +145,59 @@ Wielomian& Wielomian::operator*=(const Wielomian& w) {
     return *this;
 }
 
-Wielomian operator*(const Wielomian& w1, const Wielomian& w2) {
+Wielomian operator*(const BazaWielomianu& w1, const BazaWielomianu& w2) {
     Wielomian wynik(w1);
     wynik *= w2;
     return wynik;
 }
 
 Wielomian& Wielomian::operator*=(double c) {
-    for (unsigned int i = 0; i <= stopien; i++) {
+    for (unsigned int i = 0; i <= stopien; i++)
         wspolczynnik[i] *= c;
-    }
     return *this;
 }
 
-Wielomian operator*(const Wielomian& w, double c) {
+Wielomian operator*(const BazaWielomianu& w, double c) {
     Wielomian wynik(w);
     wynik *= c;
     return wynik;
 }
 
-Wielomian operator*(double c, const Wielomian& w) {
+Wielomian operator*(double c, const BazaWielomianu& w) {
     return w * c;
 }
 
-WynikDzielenia Wielomian::operator/=(const Wielomian& w2) {
+WynikDzielenia Wielomian::operator/=(const BazaWielomianu& w2) {
     WynikDzielenia wynik;
+    unsigned int st2 = w2.GetStopien();
 
-    if (w2.stopien == 0 && w2.wspolczynnik[0] == 0.0) {
+    if (st2 == 0 && w2[0] == 0.0) {
         wynik.iloraz = *this;
         wynik.reszta = Wielomian();
         return wynik;
     }
 
-    if (stopien < w2.stopien) {
+    if (stopien < st2) {
         wynik.iloraz = Wielomian();
         wynik.reszta = *this;
         return wynik;
     }
 
-    unsigned int wynik_stopien = stopien - w2.stopien;
+    unsigned int wynik_stopien = stopien - st2;
     double* wynik_wsp = new double[wynik_stopien + 1];
     for (unsigned int i = 0; i <= wynik_stopien; i++)
         wynik_wsp[i] = 0.0;
 
     Wielomian reszta = *this;
 
-    while (reszta.stopien >= w2.stopien && !(reszta.stopien == 0 && reszta.wspolczynnik[0] == 0.0)) {
-        unsigned int diff_stopien = reszta.stopien - w2.stopien;
-        double wsp_ilorazu = reszta.wspolczynnik[reszta.stopien] / w2.wspolczynnik[w2.stopien];
+    while (reszta.stopien >= st2 && !(reszta.stopien == 0 && reszta.wspolczynnik[0] == 0.0)) {
+        unsigned int diff_stopien = reszta.stopien - st2;
+        double wsp_ilorazu = reszta.wspolczynnik[reszta.stopien] / w2[st2];
 
         wynik_wsp[diff_stopien] = wsp_ilorazu;
 
         Jednomian jednomian(diff_stopien, wsp_ilorazu);
-
-        Wielomian w2_kopia = w2;
-        reszta -= (w2_kopia * jednomian);
+        reszta -= (w2 * jednomian);
 
         unsigned int nowy_stopien_reszty = reszta.stopien;
         while (nowy_stopien_reszty > 0 && reszta.wspolczynnik[nowy_stopien_reszty] == 0.0) {
@@ -244,34 +230,34 @@ Wielomian& Wielomian::operator/=(double c) {
     return *this;
 }
 
-WynikDzielenia operator/(const Wielomian& w1, const Wielomian& w2) {
+WynikDzielenia operator/(const BazaWielomianu& w1, const BazaWielomianu& w2) {
     Wielomian temp(w1);
     return (temp /= w2);
 }
 
-Wielomian operator/(const Wielomian& w, double c) {
+Wielomian operator/(const BazaWielomianu& w, double c) {
     Wielomian wynik(w);
     wynik /= c;
     return wynik;
 
 }
-Wielomian& Wielomian::operator%=(const Wielomian& w2) {
+Wielomian& Wielomian::operator%=(const BazaWielomianu& w2) {
     *this = ((*this) /= w2).reszta;
     return *this;
 }
 
-Wielomian operator%(const Wielomian& w1, const Wielomian& w2) {
+Wielomian operator%(const BazaWielomianu& w1, const BazaWielomianu& w2) {
     Wielomian temp(w1);
     WynikDzielenia wd = (temp /= w2);
     return wd.reszta;
 }
-Wielomian operator+(const Wielomian& w1, const Wielomian& w2) {
+Wielomian operator+(const BazaWielomianu& w1, const BazaWielomianu& w2) {
     Wielomian suma(w1);
     suma += w2;
     return suma;
 }
 
-Wielomian operator-(const Wielomian& w1, const Wielomian& w2) {
+Wielomian operator-(const BazaWielomianu& w1, const BazaWielomianu& w2) {
     Wielomian roznica(w1);
     roznica -= w2;
     return roznica;
@@ -287,32 +273,31 @@ Wielomian& Wielomian::operator-=(double c) {
     return *this;
 }
 
-Wielomian operator+(const Wielomian& w, double c) {
+Wielomian operator+(const BazaWielomianu& w, double c) {
     Wielomian suma(w);
     suma += c;
     return suma;
 }
 
-Wielomian operator+(double c, const Wielomian& w) {
+Wielomian operator+(double c, const BazaWielomianu& w) {
     return w + c;
 }
 
-Wielomian operator-(const Wielomian& w, double c) {
+Wielomian operator-(const BazaWielomianu& w, double c) {
     Wielomian roznica(w);
     roznica -= c;
     return roznica;
 }
 
-Wielomian operator-(double c, const Wielomian& w) {
-    Wielomian wynik;
-    wynik.SetStopien(w.GetStopien());
-    wynik.SetWspolczynnik(0, c - w.GetWspolczynnik(0));
+Wielomian operator-(double c, const BazaWielomianu& w) {
+    Wielomian wynik(w.GetStopien());
+    wynik[0] = c - w[0];
     for (unsigned int i = 1; i <= w.GetStopien(); i++)
-        wynik.SetWspolczynnik(i, -w.GetWspolczynnik(i));
+        wynik[i] = -w[i];
     return wynik;
 }
 
-ostream& operator<<(ostream& os, const Wielomian& w) {
+ostream& operator<<(ostream& os, const BazaWielomianu& w) {
     w.Pokaz();
     return os;
 }
@@ -453,12 +438,21 @@ void Wielomian::AnalizujJednomiany(const char* napis) {
 //    return w;
 //}
 
-void Wielomian::Pokaz() const {
+double BazaWielomianu::operator()(double x) const {
+    if (stopien == 0) return (*this)[0];
+
+    double wynik = (*this)[stopien];
+    for (unsigned int i = stopien; i > 0; --i)
+        wynik = wynik * x + (*this)[i - 1];
+    return wynik;
+}
+
+void BazaWielomianu::Pokaz() const {
     bool pierwszy = true;
     bool wszystkieZerowe = true;
 
     for (int i = stopien; i >= 0; i--) {
-        if (wspolczynnik[i] != 0.0) {
+        if ((*this)[i] != 0.0) {
             wszystkieZerowe = false;
             break;
         }
@@ -470,7 +464,7 @@ void Wielomian::Pokaz() const {
     }
 
     for (int i = stopien; i >= 0; i--) {
-        double wsp = wspolczynnik[i];
+        double wsp = (*this)[i];
 
         if (wsp == 0.0) {
             continue;
@@ -507,4 +501,84 @@ void Wielomian::Pokaz() const {
         pierwszy = false;
     }
     cout << endl;
+}
+
+Jednomian::Jednomian() : BazaWielomianu(0), wspolczynnik(0.0) {}
+
+Jednomian::Jednomian(unsigned int st, double wsp) : BazaWielomianu(st), wspolczynnik(wsp) {}
+
+Jednomian::Jednomian(const Jednomian& j) : BazaWielomianu(j.stopien), wspolczynnik(j.wspolczynnik) {}
+
+double& Jednomian::operator[](unsigned int i) {
+    if (i == stopien) {
+        return wspolczynnik;
+    }
+    if (wspolczynnik == 0.0) {
+        stopien = i;
+        return wspolczynnik;
+    }
+    static double zero = 0.0;
+    zero = 0.0;
+    return zero;
+}
+double const Jednomian::operator[](unsigned int i) const {
+    return (i == stopien) ? wspolczynnik : 0.0;
+}
+
+Jednomian& Jednomian::operator=(const Jednomian& j) {
+    if (this != &j) {
+        stopien = j.stopien;
+        wspolczynnik = j.wspolczynnik;
+    }
+    return *this;
+}
+
+Jednomian& Jednomian::operator*=(const Jednomian& j) {
+    stopien += j.stopien;
+    wspolczynnik *= j.wspolczynnik;
+    return *this;
+}
+
+Jednomian& Jednomian::operator*=(double c) {
+    wspolczynnik *= c;
+    return *this;
+}
+
+Jednomian& Jednomian::operator/=(double c) {
+    if (c != 0.0) {
+        wspolczynnik /= c;
+    }
+    return *this;
+}
+
+Jednomian Jednomian::Pochodna(int ktora) const {
+    if (ktora <= 0) return *this;
+    if (stopien == 0 || ktora > stopien)
+        return Jednomian();
+    if (ktora > 1)
+        return Pochodna(1).Pochodna(ktora - 1);
+
+    return Jednomian(stopien - 1, wspolczynnik * stopien);
+}
+
+Jednomian operator*(const Jednomian& j1, const Jednomian& j2) {
+    Jednomian wynik(j1);
+    wynik *= j2;
+    return wynik;
+}
+
+Jednomian operator*(const Jednomian& j, double c) {
+    Jednomian wynik(j);
+    wynik *= c;
+    return wynik;
+}
+
+Jednomian operator*(double c, const Jednomian& j) {
+    return j * c;
+}
+
+Jednomian operator/(const Jednomian& j, double c) {
+    Jednomian wynik(j);
+    wynik /= c;
+    return wynik;
 }
