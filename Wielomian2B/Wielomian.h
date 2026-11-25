@@ -36,12 +36,12 @@ public:
     Wielomian(const BazaWielomianu& w);
     virtual ~Wielomian();
 
-    Wielomian& operator=(const Wielomian& w);
-    Wielomian& operator+=(const Wielomian&);
-    Wielomian& operator-=(const Wielomian&);
-    WynikDzielenia operator/=(const Wielomian&);
-    Wielomian& operator*=(const Wielomian& w);
-    Wielomian& operator%=(const Wielomian&);
+    Wielomian& operator=(const BazaWielomianu&);
+    Wielomian& operator+=(const BazaWielomianu&);
+    Wielomian& operator-=(const BazaWielomianu&);
+    WynikDzielenia operator/=(const BazaWielomianu&);
+    Wielomian& operator*=(const BazaWielomianu&);
+    Wielomian& operator%=(const BazaWielomianu&);
 
     Wielomian& operator+=(double c);
     Wielomian& operator-=(double c);
