@@ -86,7 +86,7 @@ public:
 };
 
 class Jednomian : public BazaWielomianu {
-    double wspolczynnik
+    double wspolczynnik;
 public:
     Jednomian();
     Jednomian(int st, double wsp);
