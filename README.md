@@ -16,7 +16,7 @@
   - konstruktor
   - wykorzystanie Jednomianu w dzieleniu 
 
-- [ ] B. Klasa abstrakcyjna BazaWielomianu i klasy potomne Jednomian i Wielomian
+- [x] B. Klasa abstrakcyjna BazaWielomianu i klasy potomne Jednomian i Wielomian
   - optymalne wykorzystanie pamięci - Jednomian ma jeden współczynnik, Wielomian, jak wcześniej, cała tablicę
   - co wspólne do klasy BazaWielomianu (stopień, operatory, którym wystarczy operator [] i stopień)
   - czysto wirtualny operator [] w Bazie, nadpisany w Jednomianie i Wielomianie
